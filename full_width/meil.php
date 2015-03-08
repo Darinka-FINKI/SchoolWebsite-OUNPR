@@ -1,3 +1,26 @@
+<?php
+//if "email" variable is filled out, send email
+  if (isset($_REQUEST['email']))  {
+  
+  //Email information
+  $admin_email = "someone@example.com";
+  $email = $_REQUEST['email'];
+  $subject = $_REQUEST['subject'];
+  $comment = $_REQUEST['comment'];
+  
+  //send email
+  mail($admin_email, "$subject", $comment, "From:" . $email);
+  
+  //Email response
+  echo "Thank you for contacting us!";
+  }
+  
+  //if "email" variable is not filled out, display the form
+  else  {
+
+?>
+
+
 
 <!doctype html>
 <!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
@@ -6,7 +29,7 @@
 <head>
 	
 	<!-- Basic -->
-	<title>Кадар</title>
+	<title>Margo | Contact</title>
 	
 	<!-- Define Charset -->
 	<meta charset="utf-8">
@@ -44,7 +67,7 @@
 	<link rel="stylesheet" type="text/css" href="css/colors/purple.css" title="purple" media="screen" />
 	<link rel="stylesheet" type="text/css" href="css/colors/sky-blue.css" title="sky-blue" media="screen" />
 	<link rel="stylesheet" type="text/css" href="css/colors/yellow.css" title="yellow" media="screen" />
-	
+
 	
 	
 	<!-- Margo JS  -->
@@ -63,6 +86,8 @@
 	<script type="text/javascript" src="js/jquery.easypiechart.min.js"></script>
 	<script type="text/javascript" src="js/jquery.nicescroll.min.js"></script>
 	<script type="text/javascript" src="js/jquery.parallax.js"></script>
+	<script type="text/javascript" src="js/contact.form.js"></script>
+	<script src="http://maps.googleapis.com/maps/api/js?sensor=false" type="text/javascript"></script>
 	<script type="text/javascript" src="js/script.js"></script>
 	
 	<!--[if IE 8]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
@@ -124,7 +149,7 @@
                                 </ul>
                                 	
                                 </li>
-                                 <li> <a href="#">Проекти</a></li>
+                                 <li> <a href="projects.html">Проекти</a></li>
                                  
                                  <li> <a href="gallery.html">Галерија</a>
                             
@@ -140,207 +165,160 @@
             </div>
 		
 		
+		<!-- Start Map --> 
+		<div id="map" data-position-latitude="41.688237" data-position-longitude="22.809916"></div>
+		<script>
+			(function ( $ ) {
+				$.fn.CustomMap = function( options ) {
+					
+					var posLatitude = $('#map').data('position-latitude'),
+					posLongitude = $('#map').data('position-longitude');
+					
+					var settings = $.extend({
+						home: { latitude: posLatitude, longitude: posLongitude },
+						text: '<div class="map-popup"><h4>Web Development | ZoOm-Arts</h4><p>A web development blog for all your HTML5 and WordPress needs.</p></div>',
+						icon_url: $('#map').data('marker-img'),	
+						zoom: 15
+					}, options );
+					
+					var coords = new google.maps.LatLng(settings.home.latitude, settings.home.longitude);
+					
+					return this.each(function() {	
+						var element = $(this);
+						
+						var options = {
+							zoom: settings.zoom,
+							center: coords,
+							mapTypeId: google.maps.MapTypeId.ROADMAP,
+							mapTypeControl: false,
+							scaleControl: false,
+							streetViewControl: false,
+							panControl: true,
+							disableDefaultUI: true,
+							zoomControlOptions: {
+								style: google.maps.ZoomControlStyle.DEFAULT
+							},
+							overviewMapControl: true,	
+						};
+						
+						var map = new google.maps.Map(element[0], options);
+						
+						var icon = { 
+							url: settings.icon_url, 
+							origin: new google.maps.Point(0, 0)
+						};
+						
+						var marker = new google.maps.Marker({
+							position: coords,
+							map: map,
+							icon: icon,
+							draggable: false
+						});
+						
+						var info = new google.maps.InfoWindow({
+							content: settings.text
+						});
+						
+						google.maps.event.addListener(marker, 'click', function() { 
+							info.open(map, marker);
+						});
+						
+						var styles = [{"featureType":"landscape","stylers":[{"saturation":-100},{"lightness":65},{"visibility":"on"}]},{"featureType":"poi","stylers":[{"saturation":-100},{"lightness":51},{"visibility":"simplified"}]},{"featureType":"road.highway","stylers":[{"saturation":-100},{"visibility":"simplified"}]},{"featureType":"road.arterial","stylers":[{"saturation":-100},{"lightness":30},{"visibility":"on"}]},{"featureType":"road.local","stylers":[{"saturation":-100},{"lightness":40},{"visibility":"on"}]},{"featureType":"transit","stylers":[{"saturation":-100},{"visibility":"simplified"}]},{"featureType":"administrative.province","stylers":[{"visibility":"on"}]},{"featureType":"water","elementType":"labels","stylers":[{"visibility":"on"},{"lightness":-25},{"saturation":-100}]},{"featureType":"water","elementType":"geometry","stylers":[{"hue":"#ffff00"},{"lightness":-25},{"saturation":-97}]}];
+						
+						map.setOptions({styles: styles});
+					});
+
+};
+}( jQuery ));
+
+jQuery(document).ready(function() {
+	jQuery('#map').CustomMap();
+});
+</script>
+<!-- End Map -->
+
+
+
+
+<!-- Start Content -->
+<div id="content">
+	<div class="container">
 		
-		<!-- Start Page Banner -->
-		<div class="page-banner no-subtitle">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-6">
-						<h2>КАЛЕНДАР ЗА РАБОТА </h2>
-					</div>
-					<div class="col-md-6">
-						<ul class="breadcrumbs">
-							<li><a href="index.html">Почетна</a></li>
-							<li>Работен календар </li>
-						</ul>
-					</div>
+		<div class="row">
+			
+			<div class="col-md-8">
+				
+				<!-- Classic Heading -->
+				<h4 class="classic-title"><span>Контактирајте не!</span></h4>
+				
+				<!-- Start Contact Form -->
+				<div id="contact-form" class="contatct-form">
+					<div class="loader"></div>
+					<form  class="contactForm" name="cform" method="post">
+						<div class="row">
+							<div class="col-md-4">
+								<label for="name">Име и презиме: <span class="required">*</span></label>
+								<span class="name-missing" >Внесете го вашето име и презиме</span>  
+								<input id="name" name="subject" type="text" value="" size="30">
+							</div>
+							<div class="col-md-4">
+								<label for="e-mail">E-mail:<span class="required">*</span></label>
+								<span class="email-missing">Внесете ја вашата e-mail адреса</span> 
+								<input id="e-mail" name="email" type="text" value="" size="30">
+							</div>
+							
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<label for="message">Коментар</label>
+								<span class="message-missing">Ваш коментар, забелешка или предлог.</span>
+								<textarea id="message" name="comment" cols="45" rows="10"></textarea>
+								<input type="submit" name="submit" class="button" id="submit_btn" value="Прати порака">
+							</div>
+						</div>
+					</form>
 				</div>
+				<!-- End Contact Form -->
+				
 			</div>
-		</div>
-		<!-- End Page Banner -->
-		
-		
-		
-		
-		<!-- Start Content -->
-		<div id="content">
-			<div class="container">
-				<div class="row sidebar-page">
-					
-					
-					<!-- Page Content -->
-					<div class="col-md-9 page-content">
-						
-						<!-- Classic Heading -->
-						<h4 class="classic-title"><span>КАЛЕНДАР ЗА РАБОТА за учебната 2014/15 година </span></h4>
-						
+			
+			<div class="col-md-4">
+				
+				<!-- Classic Heading -->
+				<h4 class="classic-title"><span>Информации</span></h4>
+				
 
-<h3>Планирање и организација на образовната и воспитната дејност <br/>				
-								</h3><br/>
-								
-<h4>Наставната година ќе започне на 01. 09. 2014 година и ќе трае до 10. 06. 2015 година, а ќе се одвива по утврден годишен календар за работа. Ќе се реализираат вкупно 180 наставни дена. </h4>
-<h4><br/>	Согласно календарот за работа ќе се одбележат следните значајни датуми:<br/>
-- Одбележување на празникот 8.Септември<br/>
-- Свечен прием на првачињата во Детската организација на Македонија<br/>
-- Одбележување на 5. Октомври - Денот на учителите<br/>
-- Одбележување на 11.Октомври<br/>
-- Одбележување на Денот на македонската револуционерна борба - 23.Октомври<br/>
-- Одбележување на Патрониот празник на училиштето – 21. Ноември<br/>
-- Одбележување на 8. Декември – Св. Климент Охридски<br/>
-- Одбележување на Новогодишните и Божиќните празници<br/>
-- Одбележување на роденденот на Тоше Проески – 25. јануари<br/>
-- Одбележување на Денот на жената - 8. Март<br/>
-- Одбележување на Денот на пролетта и екологијата – 21. Март<br/>
-- Активности по повод големиот христијански празник Вегигден <br/>
-- Одбележување на Денот на Трудот - 1.Мај<br/>
-- Одбележување на годишнината од смртта на Гоце Делчев – 4. мај<br/>
-- Одбележување на 24. Мај - Ден на словенските просветители<br/>
-- Свеченост по повод завршувањето на учебната година<br/>
-</h4>
-						
-						
-						<!-- Some Text
-						<p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.</p>
-						<p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.</p>
-						 -->
-						<!-- Divider -->
-						<div class="hr5" style="margin-top:30px; margin-bottom:45px;"></div>
-						
-						<!-- Accordion -->
-						<div class="panel-group" id="accordion">
-							
-							<!-- Start Accordion 1 -->
-							<div class="panel panel-default">
-								<!-- Toggle Heading -->
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<a data-toggle="collapse" data-parent="#accordion" href="#collapse-4">
-											<i class="fa fa-angle-up control-icon"></i>
-											<i class="fa fa-desktop"></i> Работен календар за учебната 2014/2015
-										</a>
-									</h4>
-								</div>
-								<!-- Toggle Content -->
-								<div id="collapse-4" class="panel-collapse collapse in">
-									<div class="panel-body">
-										<h3>  </h3> <br />
-										
-<img src="images/kal1.jpg"/>
-<img src="images/kal2.jpg"/>
-											</div>
-							</div>
-							</div>
-							
-							
-						</div>
-						<!-- End Accordion -->
-						
-					</div>
-					<!-- End Page Content-->
+				
+				<!-- Divider -->
+				<div class="hr1" style="margin-bottom:10px;"></div>
+				
+				<!-- Info - Icons List -->
+				<ul class="icons-list">
+					<li><i class="fa fa-globe">  </i> <strong>Адреса:</strong> ул. „Борис Кидрич“  бр. 1   2315 Русиново </li>
+					<li><i class="fa fa-envelope-o"></i> <strong>Email:</strong> rusinski_rusinovo@yahoo.com</li>
+					<li><i class="fa fa-mobile"></i> <strong>Телефон:</strong> 033/ 448-522</li>
+				</ul>
+				
+				<!-- Divider -->
+				<div class="hr1" style="margin-bottom:15px;"></div>
+				
+				<!-- Classic Heading -->
+				<h4 class="classic-title"><span>Работно време: </span></h4>
+				
+				<!-- Info - List -->
+				<ul class="list-unstyled">
+					<li><strong>Понеделник - Петок</strong> - 8:00 -  16:00</li>
 					
-					
-					<!--Sidebar-->
-					<div class="col-md-3 sidebar right-sidebar">
-						
-						<!-- Search Widget -->
-						<div class="widget widget-search">
-							<form action="#">
-								<input type="search" placeholder="Enter Keywords..." />
-								<button class="search-btn" type="submit"><i class="fa fa-search"></i></button>
-							</form>
-						</div>
-
-						<!-- Categories Widget -->
-						<div class="widget widget-categories">
-							<h4>Categories <span class="head-line"></span></h4>
-							<ul>
-								<li>
-									<a href="#">Brandign</a>
-								</li>
-								<li>
-									<a href="#">Design</a>
-								</li>
-								<li>
-									<a href="#">Development</a>
-								</li>
-								<li>
-									<a href="#">Graphic</a>
-								</li>
-							</ul>
-						</div>
-
-						<!-- Popular Posts widget -->
-						<div class="widget widget-popular-posts">
-							<h4>Popular Post <span class="head-line"></span></h4>
-							<ul>
-								<li>
-									<div class="widget-thumb">
-										<a href="#"><img src="images/blog-mini-01.jpg" alt="" /></a>
-									</div>
-									<div class="widget-content">
-										<h5><a href="#">How To Download The Google Fonts Catalog</a></h5>
-										<span>Jul 29 2013</span>
-									</div>
-									<div class="clearfix"></div>
-								</li>
-								<li>
-									<div class="widget-thumb">
-										<a href="#"><img src="images/blog-mini-02.jpg" alt="" /></a>
-									</div>
-									<div class="widget-content">
-										<h5><a href="#">How To Download The Google Fonts Catalog</a></h5>
-										<span>Jul 29 2013</span>
-									</div>
-									<div class="clearfix"></div>
-								</li>
-								<li>
-									<div class="widget-thumb">
-										<a href="#"><img src="images/blog-mini-03.jpg" alt="" /></a>
-									</div>
-									<div class="widget-content">
-										<h5><a href="#">How To Download The Google Fonts Catalog</a></h5>
-										<span>Jul 29 2013</span>
-									</div>
-									<div class="clearfix"></div>
-								</li>
-							</ul>
-						</div>
-						
-						<!-- Video Widget -->
-						<div class="widget">
-							<h4>Video <span class="head-line"></span></h4>
-							<div>
-								<iframe src="http://player.vimeo.com/video/63322694?byline=0&amp;portrait=0&amp;badge=0" width="800" height="450" ></iframe>
-							</div>
-						</div>
-						
-						<!-- Tags Widget -->
-						<div class="widget widget-tags">
-							<h4>Tags <span class="head-line"></span></h4>
-							<div class="tagcloud">
-								<a href="#">Portfolio</a>
-								<a href="#">Theme</a>
-								<a href="#">Mobile</a>
-								<a href="#">Design</a>
-								<a href="#">Wordpress</a>
-								<a href="#">Jquery</a>
-								<a href="#">CSS</a>
-								<a href="#">Modern</a>
-								<a href="#">Theme</a>
-								<a href="#">Icons</a>
-								<a href="#">Google</a>
-							</div>
-						</div>
-
-					</div>
-					<!--End sidebar-->
-					
-					
-				</div>
+				</ul>
+				
 			</div>
+			
 		</div>
-		<!-- End Content -->
 		
+	</div>
+</div>
+<!-- End content -->
+
    
         
         <!-- Start Footer Section -->
@@ -428,7 +406,6 @@
         </div>
     </div>
 
-	
-	
+
 </body>
 </html>
